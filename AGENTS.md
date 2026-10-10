@@ -10,6 +10,7 @@ You have access to Codacy skills. Read the relevant `SKILL.md` whenever the user
 | `configure-codacy-cloud` | User wants to tune or configure Codacy directly on the cloud, or reduce noise on a repo already on Codacy with a finished analysis | [SKILL.md](skills/configure-codacy-cloud/SKILL.md) |
 | `setup-coverage` | User wants to set up coverage, add coverage reporting, or fix missing coverage uploads | [SKILL.md](skills/setup-coverage/SKILL.md) |
 | `codacy-analysis-cli` | User wants to run static analysis locally, scan files, or analyze staged changes without pushing to Codacy | [SKILL.md](skills/codacy-analysis-cli/SKILL.md) |
+| `rehearsal-room` | User wants to try Codacy on prose or Markdown, un-exclude paths, estimate noise from a config change, or triage a Codacy security export | [SKILL.md](skills/rehearsal-room/SKILL.md) |
 
 ## Requirements
 

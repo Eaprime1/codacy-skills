@@ -14,6 +14,7 @@ Compatible with Claude Code, OpenAI Codex, GitHub Copilot, Gemini CLI, and any a
 | [`configure-codacy-cloud`](skills/configure-codacy-cloud/SKILL.md) | Tune Codacy configuration directly on the cloud for a repo already analyzed by Codacy |
 | [`setup-coverage`](skills/setup-coverage/SKILL.md) | Set up test coverage reporting and upload to Codacy |
 | [`codacy-analysis-cli`](skills/codacy-analysis-cli/SKILL.md) | Run local static analysis using the Codacy Analysis CLI |
+| [`rehearsal-room`](skills/rehearsal-room/SKILL.md) | Dry-run a Codacy scope or rule change locally: vendor sweep, markdownlint tiers, staged un-exclusion plan |
 
 ## Requirements
 
@@ -112,3 +113,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## custos overlay (fork)
+
+This fork adds project context for the `Eaprime1/custos` repository: a shared reference in [`references/custos-context.md`](references/custos-context.md), a short "custos-specific notes" section in each skill, and the `rehearsal-room` skill. Upstream skill text is otherwise unchanged, so upstream updates should merge with small conflicts confined to those sections.

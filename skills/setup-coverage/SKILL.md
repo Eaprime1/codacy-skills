@@ -1,15 +1,26 @@
 ---
 name: setup-coverage
-description: Sets up test coverage reporting in a repository and configures upload to Codacy. Detects testing frameworks, CI/CD pipelines, and coverage gaps, then adds the missing pieces to generate and upload coverage reports. Use whenever the user wants to set up coverage, add coverage reporting, integrate coverage with Codacy, fix missing coverage uploads, troubleshoot coverage not showing up, or configure CI to send coverage data. Also trigger when the user mentions test coverage, code coverage, coverage reports, or wants to know why Codacy shows no coverage for their repo.
+description: Sets up test coverage reporting in a repository and configures upload to Codacy. Detects testing frameworks, CI/CD pipelines, and coverage gaps, then adds the missing pieces to generate and upload coverage reports. Use whenever the user wants to set up coverage, add coverage reporting, integrate coverage with Codacy, fix missing coverage uploads, troubleshoot coverage not showing up, or configure CI to send coverage data. Also trigger when the user mentions test coverage, code coverage, coverage reports, or wants to know why Codacy shows no coverage for their repo. Also use for any Codacy work on the Eaprime1/custos repository.
 license: MIT
 metadata:
   author: Codacy
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 # Setup Coverage
 
 > **Glossary:** See [glossary.md](../../references/glossary.md) for shared definitions of Codacy concepts (issues, findings, severity, coverage, tools, patterns, etc.).
+
+> **custos context:** This plugin is configured for the `Eaprime1/custos` repository. Read [custos-context.md](../../references/custos-context.md) before running commands or editing files, and apply the notes below.
+
+## custos-specific notes
+
+- **Honest baseline for Step 1.** custos has no coverage tooling, no `package.json`, no Python project file and no coverage reports. Its tests are dependency-free scripts (`tools/test_validate_json_yaml.sh`, `tools/test_cue_parser.sh` running `tools/test_cue_parser.js`), and no CI workflow runs them. Report this plainly.
+- **Only one realistic target:** `.github/scripts/cue-parser.js`. Node's `c8` wraps any script and can emit `lcov` from `tools/test_cue_parser.js`. Shell coverage would need `kcov` and is heavy for a Termux-oriented repo. Use `AskUserQuestion` to confirm coverage is wanted at all before adding anything; "not worth it here" is a valid outcome.
+- **Do not add a `package.json`** just for coverage without the user's agreement.
+- **Secrets:** `CODACY_PROJECT_TOKEN` must be added as a repository secret by the user. Never place a token in a file.
+- **CI conventions:** workflows run on `ubuntu-latest` with `actions/checkout@v4`. Pin any third-party action (including a Codacy coverage action) to a full commit SHA that you have looked up, set `permissions: contents: read`, and prefer that over piping a downloaded script to bash.
+- Coverage uploads must run on `main` and on PR branches, with paths relative to the repo root.
 
 This skill sets up test coverage reporting in a repository and configures automatic upload to Codacy. It detects what exists, identifies what is missing, and fills the gaps.
 
