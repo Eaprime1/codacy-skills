@@ -12,6 +12,9 @@ git rev-parse --show-toplevel >/dev/null 2>&1 || { echo "not inside a git reposi
 # Directory names that almost always hold third-party or generated code.
 NAMES='venv|\.venv|env|site-packages|node_modules|vendor|third_party|dist|build|__pycache__|\.tox|\.eggs|target|Pods'
 
+TMP_FILE="$(mktemp -t vendor_sweep.XXXXXX)"
+trap 'rm -f "${TMP_FILE}"' EXIT
+
 total="$(git ls-files | wc -l | tr -d ' ')"
 echo "tracked files: ${total}"
 echo
@@ -22,11 +25,10 @@ git ls-files \
       { path=""; for (i=1; i<NF; i++) { path = path (i>1 ? "/" : "") $i
           if ($i ~ names) { count[path]++; break } } }
       END { for (p in count) printf "%d\t%s\n", count[p], p }' \
-  | sort -rn > /tmp/vendor_sweep.$$ || true
+  | sort -rn > "${TMP_FILE}" || true
 
-if [ ! -s /tmp/vendor_sweep.$$ ]; then
+if [ ! -s "${TMP_FILE}" ]; then
   echo "No vendored or generated directories are tracked. Nothing to exclude."
-  rm -f /tmp/vendor_sweep.$$
   exit 0
 fi
 
@@ -37,11 +39,10 @@ while IFS=$'\t' read -r n p; do
   found=1
   pct=$(( 100 * n / total ))
   printf '  %6d files (%d%% of repo)  %s/\n' "$n" "$pct" "$p"
-done < /tmp/vendor_sweep.$$
+done < "${TMP_FILE}"
 
 if [ "$found" -eq 0 ]; then
   echo "  (none reach ${MIN} files)"
-  rm -f /tmp/vendor_sweep.$$
   exit 0
 fi
 
@@ -50,14 +51,13 @@ echo "Suggested .codacy.yml exclude_paths (must land on the DEFAULT branch to ta
 while IFS=$'\t' read -r n p; do
   [ "$n" -ge "$MIN" ] || continue
   echo "  - \"${p}/**\""
-done < /tmp/vendor_sweep.$$
+done < "${TMP_FILE}"
 
 echo
 echo "Suggested cleanup (needs the owner's approval; do not run automatically):"
 while IFS=$'\t' read -r n p; do
   [ "$n" -ge "$MIN" ] || continue
   echo "  git rm -r --cached \"${p}\"   # untrack, keeps the files on disk"
-done < /tmp/vendor_sweep.$$
+done < "${TMP_FILE}"
 echo "  and add the same directory names to .gitignore"
 
-rm -f /tmp/vendor_sweep.$$

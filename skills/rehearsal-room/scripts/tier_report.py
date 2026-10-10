@@ -53,9 +53,9 @@ def main():
         print("No issues found. Nothing to tune.")
         return 0
 
-    t1 = {r for r in a.tier1.split(",") if r}
-    t2 = t1 | {r for r in a.tier2.split(",") if r}
-    stage = {s for s in a.stage.split(",") if s}
+    t1 = {r.strip() for r in a.tier1.split(",") if r.strip()}
+    t2 = t1 | {r.strip() for r in a.tier2.split(",") if r.strip()}
+    stage = {s.strip() for s in a.stage.split(",") if s.strip()}
     all_files = len({i["fileName"] for i in issues})
     descs = {rule(i): i["ruleDescription"] for i in issues}
 

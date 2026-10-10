@@ -4,7 +4,7 @@ description: Rehearses a Codacy scope or rule change locally before it touches t
 license: MIT
 metadata:
   author: Eaprime1 (custos overlay)
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 # Rehearsal Room
@@ -31,7 +31,7 @@ Rehearsal Progress:
 
 ### Step 0: Vendor sweep (always first)
 
-Run `bash scripts/vendor_sweep.sh` from the repository root. It lists committed directories such as `venv/`, `node_modules/`, `site-packages/`, `vendor/`, `dist/` and `build/`, with file counts, and suggests exclude globs.
+Run `bash <skill-dir>/scripts/vendor_sweep.sh` from the target repository root (`<skill-dir>` is this skill's folder, for example `skills/rehearsal-room` in the plugin). It lists committed directories such as `venv/`, `node_modules/`, `site-packages/`, `vendor/`, `dist/` and `build/`, with file counts, and suggests exclude globs.
 
 Do this before tuning anything. In the first rehearsal, 480 of 501 critical security items came from a committed virtualenv, which is 96% of the export and had nothing to do with the repo's own code. See [first-run-2026-10-09.md](references/first-run-2026-10-09.md).
 
@@ -49,7 +49,7 @@ Use the default rules so the numbers show the worst case. If the Codacy Analysis
 ### Step 2: Tier the noise
 
 ```bash
-python3 -I scripts/tier_report.py <scratch>/default.json --stage "(root),docs,guides,quests"
+python3 -I <skill-dir>/scripts/tier_report.py <scratch>/default.json --stage "(root),docs,guides,quests"
 ```
 
 Defaults: Tier 1 drops line length (`MD013`) and table style (`MD060`); Tier 2 also drops style rules that fight narrative or lore writing (`MD036`, `MD033`, `MD041`, `MD025`, `MD024`). Override with `--tier1` and `--tier2` when the repo's voice differs. Report the share of issues the Tier 1 rules account for, the issues left per tier, and how many of those are auto-fixable (`markdownlint --fix`).
