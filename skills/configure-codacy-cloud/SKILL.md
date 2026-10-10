@@ -1,15 +1,26 @@
 ---
 name: configure-codacy-cloud
-description: Tunes an existing Codacy Cloud repository's configuration directly on the cloud, without local analysis, by importing the current config, suggesting higher-signal tools and patterns, reanalyzing, and iteratively reducing noise across two tuning passes. Requires the repository to already be on Codacy with at least one finished analysis. Uses the Codacy Analysis CLI only for config-file operations and the Codacy Cloud CLI for everything else. Produces a machine-readable JSON summary of pattern, tool, category, and severity changes plus conflicts and recommended path ignores. Use when the user wants to configure or tune Codacy directly on the cloud, reduce noise on a repository already analyzed by Codacy, optimize cloud patterns and tools, or improve the signal of cloud issues without running local analysis.
+description: Tunes an existing Codacy Cloud repository's configuration directly on the cloud, without local analysis, by importing the current config, suggesting higher-signal tools and patterns, reanalyzing, and iteratively reducing noise across two tuning passes. Requires the repository to already be on Codacy with at least one finished analysis. Uses the Codacy Analysis CLI only for config-file operations and the Codacy Cloud CLI for everything else. Produces a machine-readable JSON summary of pattern, tool, category, and severity changes plus conflicts and recommended path ignores. Use when the user wants to configure or tune Codacy directly on the cloud, reduce noise on a repository already analyzed by Codacy, optimize cloud patterns and tools, or improve the signal of cloud issues without running local analysis. Also use for any Codacy work on the Eaprime1/custos repository.
 license: MIT
 metadata:
   author: Codacy
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 # Configure Codacy (Cloud)
 
 > **Glossary:** See [glossary.md](../../references/glossary.md) for shared definitions of Codacy concepts (issues, findings, severity, coverage, tools, patterns, etc.).
+
+> **custos context:** This plugin is configured for the `Eaprime1/custos` repository. Read [custos-context.md](../../references/custos-context.md) before running commands or editing files, and apply the notes below.
+
+## custos-specific notes
+
+- **Reachability is a hard requirement.** If the Cloud CLI cannot reach Codacy from this session, stop at the startup checks and ask the user to run the skill from a machine that can, or to paste the cloud issue overview.
+- **Small stack:** the cloud config should cover shell, workflow YAML and one JavaScript file. The import disables supported tools absent from the file, so after generating the config confirm the shell and workflow tools are still present before importing.
+- **Protect the security signal.** Never cut the patterns for unpinned third-party Actions (the repo's baseline finding), script injection or overbroad workflow permissions, even if they look noisy.
+- **Scope lives in `.codacy.yml` on `main`.** Cloud pattern tuning does not replace it. Any exclusion change is a separate PR to `main`.
+- **Prose and markdown patterns are noise** in this repo (markdown is excluded); drop them first in the noise cut.
+- Ask the user to confirm before each import. Do not change the organization's Coding Standards.
 
 This skill tunes the Codacy configuration of a repository **directly on Codacy Cloud**, using the cloud as the source of truth. It does **not** run local analysis. It reads the current cloud issue landscape, applies a higher-signal set of tools and patterns, reanalyzes on Codacy, and iteratively cuts noise over two passes — producing a clean, high-signal configuration with a full audit trail of what changed and why.
 

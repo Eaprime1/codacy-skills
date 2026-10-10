@@ -1,15 +1,25 @@
 ---
 name: codacy-analysis-cli
-description: Uses the Codacy Analysis CLI to run local static analysis on repositories or specific files. Handles installation, initialization, dependency management, dry-runs, and analysis with JSON output. Use whenever the user wants to analyze code locally, run static analysis, scan for bugs or security issues, lint files, check code quality without pushing to Codacy, or run tools like ESLint, Ruff, Semgrep, RuboCop, or any other supported analyzer on their machine. Also trigger when the user asks to analyze staged changes, scan a PR locally, or set up local Codacy analysis.
+description: Uses the Codacy Analysis CLI to run local static analysis on repositories or specific files. Handles installation, initialization, dependency management, dry-runs, and analysis with JSON output. Use whenever the user wants to analyze code locally, run static analysis, scan for bugs or security issues, lint files, check code quality without pushing to Codacy, or run tools like ESLint, Ruff, Semgrep, RuboCop, or any other supported analyzer on their machine. Also trigger when the user asks to analyze staged changes, scan a PR locally, or set up local Codacy analysis. Also use for any Codacy work on the Eaprime1/custos repository.
 license: MIT
 metadata:
   author: Codacy
-  version: 1.5.0
+  version: 1.5.1
 ---
 
 # Codacy Analysis CLI
 
 > **Glossary:** See [glossary.md](../../references/glossary.md) for shared definitions of Codacy concepts (issues, findings, severity, coverage, tools, patterns, etc.).
+
+> **custos context:** This plugin is configured for the `Eaprime1/custos` repository. Read [custos-context.md](../../references/custos-context.md) before running commands or editing files, and apply the notes below.
+
+## custos-specific notes
+
+- **Mirror the cloud scope locally.** After `init`, copy the `exclude_paths` globs from the repo's `.codacy.yml` into the `exclude` field of `.codacy/codacy.config.json`, and add `airavata-custos/**` (an unrelated nested project that can sit in the working tree). Otherwise local results will not match what Codacy reports on a PR.
+- **Analyze what matters.** Target changed files first: `tools/*.sh`, `.github/workflows/*.yml`, `.github/scripts/*.js`. Expect a small tool set (shell, workflow YAML, one JS file), not language packs for Go or TypeScript.
+- **Keep artifacts local.** Do not commit `.codacy/codacy.config.json` or anything under `.codacy/generated/`; they never affect Codacy Cloud.
+- **Gating runs** use `--fail-if-missing`. A clean local run does not replace the cloud check: Codacy reads `.codacy.yml` from `main`, so confirm local excludes against `main`'s copy.
+- Pair a local run with the repo's own checks: `bash tools/validate_json_yaml.sh .` and `bash tools/scan_lexeme.sh`.
 
 The Codacy Analysis CLI (`codacy-analysis`) runs static analysis locally on a repository. It detects languages, selects tools, and reports issues — without pushing code to Codacy. This is a different tool from the Codacy Cloud CLI (`codacy`), which queries remote Codacy data.
 

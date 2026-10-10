@@ -1,15 +1,28 @@
 ---
 name: codacy-code-review
-description: Enriches pull request code reviews with Codacy data — quality issues, security findings, coverage, and duplication. Use whenever the user asks to review a PR, check what a pull request introduced, verify PR coverage, look at PR quality, or find new issues in a PR. Also use when another code-review skill is active (e.g. CodeRabbit) to layer Codacy data on top. Trigger this skill for any pull request review workflow, even if the user just says "review PR 42" or "what's wrong with this PR".
+description: Enriches pull request code reviews with Codacy data — quality issues, security findings, coverage, and duplication. Use whenever the user asks to review a PR, check what a pull request introduced, verify PR coverage, look at PR quality, or find new issues in a PR. Also use when another code-review skill is active (e.g. CodeRabbit) to layer Codacy data on top. Trigger this skill for any pull request review workflow, even if the user just says "review PR 42" or "what's wrong with this PR". Also use for any Codacy work on the Eaprime1/custos repository.
 license: MIT
 metadata:
   author: Codacy
-  version: 1.5.0
+  version: 1.5.1
 ---
 
 # Codacy Code Review
 
 > **Glossary:** See [glossary.md](../../references/glossary.md) for shared definitions of Codacy concepts (issues, findings, severity, coverage, tools, patterns, etc.).
+
+> **custos context:** This plugin is configured for the `Eaprime1/custos` repository. Read [custos-context.md](../../references/custos-context.md) before running commands or editing files, and apply the notes below.
+
+## custos-specific notes
+
+- **Merge bar:** the Final Review Gate fails on any Codacy conclusion other than `success`, `neutral` or `skipped`, and the repo rule is to resolve findings before merge. State clearly whether the PR clears that bar.
+- **Review lens for workflows and scripts** (the real code in this repo): third-party actions pinned to a full commit SHA; untrusted text passed through `env:` rather than interpolated into `run:`; minimal `permissions:`; shell scripts quoted and using `set -euo pipefail` as the existing tools do.
+- **Flag protected paths.** If the PR touches `vault/`, `moav/`, `prima-clock/`, `branch-tracker/`, `world/` or `device/`, note that Deck Master review (`@eaprime1`) is required. `vault/` is never edited directly.
+- **Step 6 (alignment):** custos has no mandatory ticket. Check the diff against the PR body's **Intent** and **What Arrived** sections instead.
+- **Step 5 (coverage):** there is no coverage upload in this repo. Report "no coverage data" rather than treating it as a gap introduced by the PR.
+- **Step 7 (test plan):** write checks as deterministic bash commands, matching the repo's quest Completion Checks and `tools/test_*.sh` fixtures.
+- **0-second Codacy result:** call it out as not a real analysis, and rely on the local run for the changed files.
+- **Output:** post the summary as a separate PR comment. Never overwrite the PR body; the seal gate parses its sections.
 
 This skill enriches code reviews with Codacy data. It works alongside any existing code review process (a code-review skill, CodeRabbit, manual review, etc.) — it adds Codacy-specific data on top.
 

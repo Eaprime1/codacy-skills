@@ -71,6 +71,7 @@ Helps with Codacy.
 | `configure-codacy-cloud` | Tune Codacy config directly on the cloud (repo already on Codacy), reduce noise |
 | `setup-coverage` | Set up test coverage reporting and upload to Codacy |
 | `codacy-analysis-cli` | Run local static analysis using the Codacy Analysis CLI |
+| `rehearsal-room` | Dry-run scope and rule changes locally before touching the repo or Codacy Cloud |
 
 ## Keeping this project up to date
 

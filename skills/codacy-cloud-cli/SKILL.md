@@ -1,15 +1,25 @@
 ---
 name: codacy-cloud-cli
-description: Uses the Codacy Cloud CLI to query repositories, issues, security findings, pull requests, tools, and patterns on Codacy Cloud. Use whenever the user mentions Codacy, asks about code quality metrics, wants to check issues or findings in a repo, inspect a pull request analysis, browse security vulnerabilities, enable or disable tools, search patterns, trigger a reanalysis, or interact with any remote Codacy data — even if they don't say "Codacy CLI" explicitly.
+description: Uses the Codacy Cloud CLI to query repositories, issues, security findings, pull requests, tools, and patterns on Codacy Cloud. Use whenever the user mentions Codacy, asks about code quality metrics, wants to check issues or findings in a repo, inspect a pull request analysis, browse security vulnerabilities, enable or disable tools, search patterns, trigger a reanalysis, or interact with any remote Codacy data — even if they don't say "Codacy CLI" explicitly. Also use for any Codacy work on the Eaprime1/custos repository.
 license: MIT
 metadata:
   author: Codacy
-  version: 1.6.1
+  version: 1.6.2
 ---
 
 # Codacy Cloud CLI
 
 > **Glossary:** See [glossary.md](../../references/glossary.md) for shared definitions of Codacy concepts (issues, findings, severity, coverage, tools, patterns, etc.).
+
+> **custos context:** This plugin is configured for the `Eaprime1/custos` repository. Read [custos-context.md](../../references/custos-context.md) before running commands or editing files, and apply the notes below.
+
+## custos-specific notes
+
+- **Repository:** provider `gh`, org `Eaprime1`, repo `custos`. Inside a clone, rely on auto-detection; outside one, use the exact casing from `codacy repositories`.
+- **If Codacy is unreachable** from the session (it has been before), stop retrying, say so, and ask the user to paste the findings from the PR check or run the CLI from their own machine.
+- **Read check timing.** A Codacy result with `started_at == completed_at` is a cached or errored result, not a real analysis. Report it as "not actually analyzed". Try `--reanalyze-and-wait` once, then fall back to the custos practice in the context file.
+- **Config comes from `main`.** `.codacy.yml` is read from the default branch, not the PR head. If a PR is stuck at `action_required` over a missing exclusion, the fix is a separate PR to `main`.
+- **Fix before ignoring.** custos requires Codacy findings to be resolved before merge. Never run a bulk ignore without the user's explicit go-ahead, and prefer a code fix.
 
 The Codacy Cloud CLI (`codacy`) is the command-line interface for Codacy Cloud. Use it whenever the user wants to interact with remote Codacy data. This is a different tool from the Codacy Analysis CLI (`codacy-analysis`), which runs static analysis locally.
 
