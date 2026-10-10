@@ -26,6 +26,9 @@ def rule(issue):
 
 
 def top(path):
+    path = path.replace("\\", "/")
+    if path.startswith("./"):
+        path = path[2:]
     return path.split("/")[0] if "/" in path else "(root)"
 
 
